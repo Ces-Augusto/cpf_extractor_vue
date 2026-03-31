@@ -5,11 +5,21 @@ $dark-low: #666;
 $light: #fff;
 $light-medium: #ddd;
 $light-low: #999;
-
 $blood: rgb(185, 0, 0);
 $blood-dark: rgb(112, 0, 0);
 $wine: rgb(54, 0, 0);
 
 
 
-
+:root {
+  --darkness: #{$darkness};
+  --dark: #{$dark};
+  --dark-medium: #{$dark-medium};
+  --dark-low: #{$dark-low};
+  --light: #{$light};
+  --light-medium: #{$light-medium};
+  --light-low: #{$light-low};
+  --blood: #{$blood};
+  --blood-dark: #{$blood-dark};
+  --wine: #{$wine};
+}
