@@ -19,7 +19,9 @@ export default {
 
 <style lang="scss">
 #app {
-  min-height: 100vh;
-  background-color: var(--dark);
+  background-color: var(--light-medium);
+  min-width: 100vw;
+  min-height: calc(100vh - 44px);
+  text-align: center;
 }
 </style>
