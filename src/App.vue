@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <base-spinner/>
     <layouts-navigations/>
     <keep-alive include="Home">
       <router-view/>

@@ -7,6 +7,7 @@
             Upload de Documento
           </h5>
         </div>
+
         <div class="card-body p-4">
           <input
             :key="inputKey"
@@ -16,6 +17,7 @@
             accept="application/pdf"
             @change="handleFile"
           />
+
           <div
             class="upload-area border-dashed rounded-3 p-5 text-center mb-4"
             @click="openFile"
@@ -27,6 +29,7 @@
               {{ fileName || 'ou clique para selecionar o arquivo' }}
             </p>
           </div>
+
           <div class="d-grid">
             <button
               class="btn btn-lg shadow-sm"
@@ -34,33 +37,43 @@
               @click="processPdf"
               style="background-color: var(--blood-dark); border: none; color: white;"
             >
-              {{ isProcessing ? 'Processando PDF...' : 'Extrair CPFs' }}
+              {{ isProcessing ? 'Processando PDF...' : 'Enviar pdf e extrair CPFs' }}
             </button>
           </div>
+
           <div v-if="errorMessage" class="alert alert-danger mt-4 mb-0">
             {{ errorMessage }}
           </div>
         </div>
+
         <div class="card-footer bg-light text-center py-3">
           <small class="text-muted">
             Formatos aceitos: .pdf (Máx. 10MB)
           </small>
         </div>
       </div>
+
       <div
-        v-if="processedFileName"
+        v-if="showResultCard"
         class="card shadow-sm border-0 mt-4"
       >
         <div class="card-header bg-dark text-white py-3">
           <h5 class="mb-0">Último arquivo processado</h5>
         </div>
-        <div class="card-body p-4">
+
+        <div v-if="isProcessing" class="spinner-wrapper">
+          <BaseSpinner />
+        </div>
+
+        <div v-else class="card-body p-4">
           <p class="mb-3">
             <strong>Nome do arquivo:</strong> {{ processedFileName }}
           </p>
+
           <p class="mb-3">
             <strong>Quantidade de CPFs encontrados:</strong> {{ cpfAnalysis.length }}
           </p>
+
           <div v-if="cpfAnalysis.length">
             <div
               v-for="(item, index) in cpfAnalysis"
@@ -77,6 +90,7 @@
               </span>
             </div>
           </div>
+
           <div v-else class="alert alert-warning mb-0">
             Nenhum CPF foi encontrado neste arquivo.
           </div>
@@ -87,12 +101,18 @@
 </template>
 
 <script>
+import BaseSpinner from '@/components/global/BaseSpinner.vue'
 import { extractTextFromPdf } from '@/services/pdf/pdfService'
 import { normalizeText, getCpfAnalysis } from '@/services/cpf/cpfService'
 import { processPdfUpload } from '@/services/upload/uploadHistoryService'
 
 export default {
   name: 'PdfUpload',
+
+  components: {
+    BaseSpinner
+  },
+
   data () {
     return {
       file: null,
@@ -102,7 +122,9 @@ export default {
       errorMessage: '',
       extractedText: '',
       processedFileName: '',
-      cpfAnalysis: []
+      cpfAnalysis: [],
+      successMessage: '',
+      showResultCard: false
     }
   },
 
@@ -147,6 +169,9 @@ export default {
 
       this.isProcessing = true
       this.errorMessage = ''
+      this.showResultCard = true
+      this.cpfAnalysis = []
+      this.processedFileName = ''
 
       try {
         const text = await extractTextFromPdf(this.file)
@@ -169,6 +194,7 @@ export default {
       } catch (error) {
         console.error('Erro ao processar PDF:', error)
         this.errorMessage = 'Não foi possível processar e salvar o PDF. Verifique se ele contém texto selecionável.'
+        this.showResultCard = false
       } finally {
         this.isProcessing = false
       }
@@ -207,6 +233,14 @@ export default {
     background-color: rgba(0, 0, 0, 0.329);
     border-color: var(--blood-dark);
   }
+}
+
+.spinner-wrapper {
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
 }
 
 .cpf-result-item {
