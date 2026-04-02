@@ -89,6 +89,7 @@
 <script>
 import { extractTextFromPdf } from '@/services/pdf/pdfService'
 import { normalizeText, getCpfAnalysis } from '@/services/cpf/cpfService'
+import { processPdfUpload } from '@/services/upload/uploadHistoryService'
 
 export default {
   name: 'PdfUpload',
@@ -157,10 +158,17 @@ export default {
         this.cpfAnalysis = getCpfAnalysis(text)
         this.processedFileName = this.file.name
 
+        const validCpfs = this.cpfAnalysis.filter(item => item.valid)
+
+        await processPdfUpload({
+          file: this.file,
+          validCpfs
+        })
+
         this.resetInput()
       } catch (error) {
         console.error('Erro ao processar PDF:', error)
-        this.errorMessage = 'Não foi possível ler o PDF. Verifique se ele contém texto selecionável.'
+        this.errorMessage = 'Não foi possível processar e salvar o PDF. Verifique se ele contém texto selecionável.'
       } finally {
         this.isProcessing = false
       }
