@@ -7,6 +7,56 @@ function sanitizeFileName (fileName) {
     .replace(/[^\w.-]/g, '_')
 }
 
+function splitFileName (fileName) {
+  const lastDotIndex = fileName.lastIndexOf('.')
+
+  if (lastDotIndex === -1) {
+    return {
+      name: fileName,
+      extension: ''
+    }
+  }
+
+  return {
+    name: fileName.substring(0, lastDotIndex),
+    extension: fileName.substring(lastDotIndex)
+  }
+}
+
+export async function generateUniqueFileName (fileName) {
+  const snapshot = await database.ref('uploads').once('value')
+
+  if (!snapshot.exists()) {
+    return fileName
+  }
+
+  const existingNames = []
+
+  snapshot.forEach(childSnapshot => {
+    const upload = childSnapshot.val()
+
+    if (upload && upload.fileName) {
+      existingNames.push(upload.fileName)
+    }
+  })
+
+  if (!existingNames.includes(fileName)) {
+    return fileName
+  }
+
+  const { name, extension } = splitFileName(fileName)
+
+  let counter = 1
+  let newFileName = `${name}_${counter}${extension}`
+
+  while (existingNames.includes(newFileName)) {
+    counter++
+    newFileName = `${name}_${counter}${extension}`
+  }
+
+  return newFileName
+}
+
 export async function uploadPdfToStorage (file) {
   const safeName = sanitizeFileName(file.name)
   const filePath = `uploads/pdfs/${Date.now()}_${safeName}`
@@ -46,9 +96,7 @@ export async function saveUploadHistory ({ file, validCpfs, storagePath, downloa
   }
 }
 
-export async function saveCpfHistory ({ validCpfs, fileName, uploadId }) {
-  const createdAt = Date.now()
-
+export async function saveCpfHistory ({ validCpfs, fileName, uploadId, createdAt }) {
   const promises = validCpfs.map(item => {
     const cpfRef = database.ref('cpfHistory').push()
 
@@ -65,10 +113,16 @@ export async function saveCpfHistory ({ validCpfs, fileName, uploadId }) {
 }
 
 export async function processPdfUpload ({ file, validCpfs }) {
-  const { storagePath, downloadURL } = await uploadPdfToStorage(file)
+  const uniqueFileName = await generateUniqueFileName(file.name)
+
+  const renamedFile = new File([file], uniqueFileName, {
+    type: file.type
+  })
+
+  const { storagePath, downloadURL } = await uploadPdfToStorage(renamedFile)
 
   const { uploadId, createdAt } = await saveUploadHistory({
-    file,
+    file: renamedFile,
     validCpfs,
     storagePath,
     downloadURL
@@ -76,14 +130,16 @@ export async function processPdfUpload ({ file, validCpfs }) {
 
   await saveCpfHistory({
     validCpfs,
-    fileName: file.name,
-    uploadId
+    fileName: renamedFile.name,
+    uploadId,
+    createdAt
   })
 
   return {
     uploadId,
     createdAt,
     storagePath,
-    downloadURL
+    downloadURL,
+    fileName: renamedFile.name
   }
 }

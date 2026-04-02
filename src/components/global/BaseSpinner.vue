@@ -1,5 +1,5 @@
 <template>
-  <div class="base-spinner">
+  <div class="base-spinner fa-3x">
     <h1>Carregando... </h1>
     <i class="fas fa-circle-notch fa-spin"></i>
   </div>
@@ -12,8 +12,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .base-spinner {
   color: var(--blood);
 }
-
 </style>
