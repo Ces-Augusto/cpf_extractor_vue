@@ -5,12 +5,6 @@ export function normalizeText (text) {
     .replace(/\s*\.\s*/g, '.')
     .replace(/\s*-\s*/g, '-')
 
-    // junta CPF com grupos separados por espaço: 123 456 789 09
-    .replace(/(\d{3})\s+(\d{3})\s+(\d{3})\s+(\d{2})/g, '$1$2$3$4')
-
-    // junta CPF com último bloco já com traço: 123 456 789-09
-    .replace(/(\d{3})\s+(\d{3})\s+(\d{3}-\d{2})/g, '$1$2$3')
-
     // remove espaços duplicados
     .replace(/\s+/g, ' ')
     .trim()
@@ -21,11 +15,11 @@ export function extractCpfs (text) {
   const normalizedText = normalizeText(text)
 
   // não deixa pegar CPF dentro de número maior
-  const cpfRegex = /(?<!\d)(\d{3}\.?\d{3}\.?\d{3}-?\d{2})(?!\d)/g
+  const cpfRegex = /(?<!\d)(\d{3}\.\d{3}\.\d{3}-\d{2})(?!\d)/g
 
   const matches = [...normalizedText.matchAll(cpfRegex)].map(match => match[1])
 
-  return matches ?? []
+  return matches
 }
 
 // Formata CPF para exibição

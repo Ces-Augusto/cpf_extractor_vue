@@ -189,8 +189,8 @@ export default {
 
 <style lang="scss" scoped>
 .card {
-  margin-top: 100px;
-  border-radius: 15px;
+  margin-top: 50px;
+  border-radius: 5px;
   max-width: 1500px;
 
   .card-body {
@@ -204,7 +204,7 @@ export default {
   transition: 0.3s;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.03);
+    background-color: rgba(0, 0, 0, 0.329);
     border-color: var(--blood-dark);
   }
 }

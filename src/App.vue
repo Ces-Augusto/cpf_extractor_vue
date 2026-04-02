@@ -2,7 +2,9 @@
   <div id="app">
     <base-spinner/>
     <layouts-navigations/>
-    <router-view/>
+    <keep-alive include="Home">
+      <router-view/>
+    </keep-alive>
   </div>
 </template>
 
@@ -21,7 +23,7 @@ export default {
 #app {
   background-color: var(--light-medium);
   min-width: 100vw;
-  min-height: calc(100vh - 44px);
+  min-height: 100Vh;
   text-align: center;
 }
 </style>

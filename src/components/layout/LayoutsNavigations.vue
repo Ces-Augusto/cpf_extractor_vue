@@ -12,6 +12,7 @@
         exact-active-class="active"
         :exact="route.path === '/'"
       >
+        <i class="fa" :class="`fa-${route.meta.icon}`"></i>
         {{ route.name }}
       </router-link>
     </li>
@@ -62,17 +63,16 @@ export default {
   background-color: var(--blood-dark);
 
   .nav-item {
-    .nav-link {
+    .nav-link  {
       transition: .4s;
       color: var(--light);
       &.active {
         color: var(--blood);
-        background-color: transparent;
-        border: 1px solid var(--blood-dark);
+        background-color: var(--dark);
         margin-bottom: 2px;
       }
-      &:hover {
-        background-color: var(--dark);
+      &:not(.active):hover {
+        background-color: var(--blood);
         border-color: var(--blood-dark);
         border: 1px solid var(--blood-dark);
       }
