@@ -1,10 +1,9 @@
 <template>
   <div class="row justify-content-center">
     <div class="col-md-10 col-lg-9">
-      <div class="card shadow-sm border-0">
-        <div class="card-header bg-dark text-white py-3">
-          <h1 class="mb-0">
-            <i class="bi bi-file-earmark-pdf me-2"></i>
+      <div class="card">
+        <div class="card-header mb-0">
+          <h1 class="text mb-0">
             Lista de CPFs Extraídos
           </h1>
         </div>
@@ -91,8 +90,9 @@ export default {
   max-width: 1500px;
   overflow: hidden;
 
-  .card-body {
-    color: var(--blood-dark);
+  .card-header {
+    background-color: var(--dark);
+    color: var(--light);
   }
 }
 

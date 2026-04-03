@@ -205,7 +205,7 @@ export default {
 
 <style lang="scss" scoped>
 .card {
-  margin-top: 50px;
+  margin-top: 30px;
   border-radius: 5px;
   max-width: 1500px;
 
