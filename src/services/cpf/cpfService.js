@@ -1,4 +1,4 @@
-// Normaliza o texto extraído do PDF
+// Normaliza o texto extraído do PDF / pdf-dist estava retornando cpfs com espaços
 export function normalizeText (text) {
   return text
     // remove espaços ao redor de pontos e traços
@@ -18,8 +18,14 @@ export function extractCpfs (text) {
   const cpfRegex = /(?<!\d)(\d{3}\.\d{3}\.\d{3}-\d{2})(?!\d)/g
 
   const matches = [...normalizedText.matchAll(cpfRegex)].map(match => match[1])
+  const uniqueMatches = [...new Set(matches)] // remove duplicados
 
-  return matches
+  return uniqueMatches
+}
+
+// Remove pontos e traços
+export function cleanCpf (cpf) {
+  return cpf.replace(/\D/g, '')
 }
 
 // Formata CPF para exibição
@@ -31,11 +37,6 @@ export function formatCpf (cpf) {
   }
 
   return cleaned.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
-}
-
-// Remove pontos e traços
-export function cleanCpf (cpf) {
-  return cpf.replace(/\D/g, '')
 }
 
 // Valida matematicamente o CPF

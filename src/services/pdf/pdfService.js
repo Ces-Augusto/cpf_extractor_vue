@@ -4,7 +4,7 @@ import pdfWorker from 'pdfjs-dist/es5/build/pdf.worker.entry'
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker
 
 export async function extractTextFromPdf (file) {
-  const arrayBuffer = await file.arrayBuffer()
+  const arrayBuffer = await file.arrayBuffer() // carrega file que vem do input e converte para arrayBuffer, que é o formato que o pdfjsLib espera
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
 
   let fullText = ''
@@ -20,5 +20,5 @@ export async function extractTextFromPdf (file) {
     fullText += `${pageText} `
   }
 
-  return fullText.trim()
+  return fullText.trim() // retorna string com todo texto do documento
 }
