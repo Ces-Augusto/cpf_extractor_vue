@@ -22,3 +22,7 @@ export async function getAllCpfHistory () {
 
   return list.sort((a, b) => b.createdAt - a.createdAt)
 }
+
+export async function deleteCpfHistory (id) {
+  await database.ref(`cpfHistory/${id}`).remove()
+}

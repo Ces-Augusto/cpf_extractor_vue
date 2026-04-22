@@ -152,3 +152,8 @@ export async function processPdfUpload ({ file, validCpfs }) {
     fileName: renamedFile.name
   }
 }
+
+// Remove um upload do histórico
+export async function deleteUploadHistory (uploadId) {
+  await database.ref(`uploads/${uploadId}`).remove()
+}

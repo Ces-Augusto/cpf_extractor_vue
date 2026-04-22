@@ -21,6 +21,7 @@
                   <th>CPF</th>
                   <th>Arquivo</th>
                   <th>Data</th>
+                  <th>Deletar</th>
                 </tr>
               </thead>
               <tbody>
@@ -28,6 +29,9 @@
                   <td>{{ item.cpf }}</td>
                   <td>{{ item.fileName || '-' }}</td>
                   <td>{{ formatDate(item.createdAt) }}</td>
+                  <td><button class="btn btn-danger" @click="deleteCpf(item.id, item.uploadId)">
+                    <i class="fas fa-trash">
+                  </i></button></td>
                 </tr>
               </tbody>
             </table>
@@ -47,7 +51,9 @@
 </template>
 
 <script>
-import { getAllCpfHistory } from '@/services/cpf/cpfHistoryService'
+
+import { getAllCpfHistory, deleteCpfHistory } from '@/services/cpf/cpfHistoryService'
+import { deleteUploadHistory } from '@/services/upload/uploadHistoryService'
 
 export default {
   name: 'showCpf',
@@ -78,6 +84,25 @@ export default {
     formatDate (timestamp) {
       if (!timestamp) return '-'
       return new Date(timestamp).toLocaleDateString('pt-BR')
+    },
+    async deleteCpf (id, uploadId) {
+      if (!confirm('Tem certeza que deseja excluir este CPF do histórico?')) return
+
+      try {
+        this.$root.$emit('Spinner::show')
+        await deleteCpfHistory(id)
+
+        if (uploadId) {
+          await deleteUploadHistory(uploadId)
+        }
+
+        // Remove o item da lista localmente para não precisar buscar tudo do banco de novo
+        this.cpfHistory = this.cpfHistory.filter(item => item.id !== id)
+      } catch (error) {
+        console.error('Erro ao excluir CPF:', error)
+      } finally {
+        this.$root.$emit('Spinner::hide')
+      }
     }
   }
 }
