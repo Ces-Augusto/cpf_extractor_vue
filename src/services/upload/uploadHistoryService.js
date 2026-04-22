@@ -1,4 +1,7 @@
-import { database, storage } from '@/services/firebase/firebase'
+import { firebaseApp } from '@/services/firebase/firebase'
+
+const database = firebaseApp.database()
+const storage = firebaseApp.storage()
 // Sanitiza o nome do arquivo, removendo acentos e caracteres especiais
 function sanitizeFileName (fileName) {
   return fileName
@@ -24,7 +27,11 @@ function splitFileName (fileName) {
 }
 // Gera um nome de arquivo único verificando o histórico de uploads no Firebase Realtime Database
 export async function generateUniqueFileName (fileName) {
-  const snapshot = await database.ref('uploads').once('value')
+  const snapshot = await database
+    .ref('uploads')
+    .orderByChild('userId')
+    .equalTo(window.uid)
+    .once('value')
   // Se não houver uploads, retorna o nome original
   if (!snapshot.exists()) {
     return fileName
@@ -76,6 +83,7 @@ export async function saveUploadHistory ({ file, validCpfs, storagePath, downloa
   const uploadRef = database.ref('uploads').push()
 
   const uploadPayload = {
+    userId: window.uid,
     fileName: file.name,
     storagePath,
     downloadURL,
@@ -101,6 +109,7 @@ export async function saveCpfHistory ({ validCpfs, fileName, uploadId, createdAt
     const cpfRef = database.ref('cpfHistory').push()
 
     return cpfRef.set({
+      userId: window.uid,
       cpf: item.cpf,
       cleanCpf: item.cleanCpf,
       fileName,

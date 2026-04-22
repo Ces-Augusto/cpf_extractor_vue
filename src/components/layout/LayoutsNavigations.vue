@@ -16,16 +16,20 @@
         {{ route.name }}
       </router-link>
     </li>
-
+    <layout-logout/>
   </nav>
 </template>
 
 <script>
+import LayoutLogout from './LayoutLogout'
+
 export default {
+  components: {
+    LayoutLogout
+  },
   computed: {
     routerLinks () {
-      return this.$router.options.routes
-        .filter(r => r.path && r.name) // evita rota inválida
+      return this.$router.options.routes.filter(r => r.name !== 'login' && r.name !== 'register')
     }
   }
 }

@@ -56,7 +56,10 @@
           <h5 class="mb-0">Último arquivo processado</h5>
         </div>
         <div v-if="isProcessing" class="spinner-wrapper">
-          <BaseSpinner />
+          <div class="spinner-border" style="width: 3rem; height: 3rem; color: var(--blood-dark);" role="status">
+            <span class="visually-hidden"></span>
+          </div>
+          <div class="mt-3 fw-bold text-secondary">Processando e extraindo...</div>
         </div>
         <div v-else class="card-body p-4">
           <p class="mb-3">
@@ -91,7 +94,6 @@
 </template>
 
 <script>
-import BaseSpinner from '@/components/global/BaseSpinner.vue'
 import { extractTextFromPdf } from '@/services/pdf/pdfService'
 import { normalizeText, getCpfAnalysis } from '@/services/cpf/cpfService'
 import { processPdfUpload } from '@/services/upload/uploadHistoryService'
@@ -99,9 +101,7 @@ import { processPdfUpload } from '@/services/upload/uploadHistoryService'
 export default {
   name: 'PdfUpload',
 
-  components: {
-    BaseSpinner
-  },
+  components: {},
 
   data () {
     return {
@@ -228,10 +228,9 @@ export default {
 .spinner-wrapper {
   min-height: 220px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: var(--translucent-dark);
-  font-size: 2rem;
 }
 
 .cpf-result-item {

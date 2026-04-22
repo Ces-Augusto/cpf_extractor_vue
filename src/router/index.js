@@ -19,6 +19,15 @@ const routes = [
       icon: 'list-ul', title: 'Lista de CPFs'
     },
     component: () => import(/* webpackChunkName: *listaCpf* */'../pages/listaCpf/index.vue')
+  },
+  {
+    path: '/login',
+    name: 'login',
+    meta: {
+      icon: 'sign-in-alt',
+      title: 'Login'
+    },
+    component: () => import(/* webpackChunkName: "login" */ '../pages/login/index.vue')
   }
 ]
 
@@ -27,10 +36,14 @@ const router = new VueRouter({
   routes
 })
 
-router.afterEach((to) => {
-  document.title = to.meta.title
-    ? `${to.meta.title}`
-    : 'CPF Extractor'
+router.beforeEach((to, from, next) => {
+  document.title = `${to.meta.title || 'Carregando'} - Expenses`
+
+  if (!window.uid && to.name !== 'login') {
+    next({ name: 'login' })
+  } else {
+    next()
+  }
 })
 
 export default router

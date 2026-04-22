@@ -1,7 +1,13 @@
-import { database } from '@/services/firebase/firebase'
+import { firebaseApp } from '@/services/firebase/firebase'
+
+const database = firebaseApp.database()
 
 export async function getAllCpfHistory () {
-  const snapshot = await database.ref('cpfHistory').once('value')
+  const snapshot = await database
+    .ref('cpfHistory')
+    .orderByChild('userId')
+    .equalTo(window.uid)
+    .once('value')
 
   if (!snapshot.exists()) return []
 
